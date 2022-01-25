@@ -1,1 +1,12 @@
-[{"title":"Hello","description":"Hello, world!","status":"Done!"},{"title":"Nice","description":"Mate","status":"Ok"}]
+[
+    {
+        "title": "Hello",
+        "description": "Hello, world!",
+        "status": "Done!"
+    },
+    {
+        "title": "Nice",
+        "description": "Mate",
+        "status": "Ok"
+    }
+]

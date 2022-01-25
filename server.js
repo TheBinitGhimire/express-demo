@@ -36,7 +36,7 @@ router.put("/todos", (req, res) => {
     });
     let newData = JSON.stringify(data);
     fs.writeFile("data.json", newData, (e) => {
-        if(e) throw e;
+        if (e) throw e;
     });
     res.status(200).send(data);
 });
@@ -50,7 +50,7 @@ router.delete("/todos", (req, res) => {
     });
     let newData = JSON.stringify(data);
     fs.writeFile("data.json", newData, (e) => {
-        if(e) throw e;
+        if (e) throw e;
     });
     res.status(200).send(data);
 })
