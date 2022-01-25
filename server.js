@@ -55,6 +55,26 @@ router.delete("/todos", (req, res) => {
     res.status(200).send(data);
 })
 
+router.patch("/todos", (req, res) => {
+    let data = JSON.parse(fs.readFileSync("data.json"));
+    const title = req.body.title;
+    const description = req.body.description;
+    const status = req.body.status;
+
+    data.forEach((element) => {
+        if (element.title == req.body.title) {
+            element.title = title;
+            element.description = description;
+            element.status = status;
+        }
+    });
+    let newData = JSON.stringify(data);
+    fs.writeFile("data.json", newData, (e) => {
+        if (e) throw e;
+    });
+    res.status(200).send(data);
+});
+
 router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "add.html"));
 })
