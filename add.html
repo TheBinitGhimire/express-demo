@@ -9,38 +9,74 @@
 </head>
 
 <body>
-    <h1>GET [all]</h1>
+    <h1>All Data</h1>
+    <div id="data"></div>
+
+    <hr size=1 color="red">
+    <h1>Operations</h1>
+    <h2>GET [all]</h2>
     <form method="GET" action="/todos">
         <button type="submit">Get All!</button>
     </form>
 
-    <h1>GET [title]</h1>
+    <h2>GET [title]</h2>
     <form method="GET" action="/todos">
         <input type="text" placeholder="Title" name="title">
         <button type="submit">Get!</button>
     </form>
 
-    <h1>PUT [data]</h1>
-    <form method="POST" action="/todos?_method=put">
+    <h2>POST [data]</h2>
+    <form method="POST" action="/todos">
         <input type="text" placeholder="Title" name="title">
         <input type="text" placeholder="Description" name="description">
         <input type="text" placeholder="Status" name="status">
         <button type="submit">Add!</button>
     </form>
 
-    <h1>DELETE [title]</h1>
+    <h2>PUT [check based on title and replace data]</h2>
+    <form method="POST" action="/todos?_method=put">
+        <input type="text" placeholder="Existing Title" name="existingTitle">
+        <input type="text" placeholder="New Title" name="newTitle">
+        <input type="text" placeholder="New Description" name="newDescription">
+        <input type="text" placeholder="New Status" name="newStatus">
+        <button type="submit">Replace!</button>
+    </form>
+
+    <h2>PATCH [check based on title and modify data]</h2>
+    <form method="POST" action="/todos?_method=patch">
+        <input type="text" placeholder="Existing Title" name="existingTitle">
+        <select name="modify" required>
+            <option value="Title">Title</option>
+            <option value="Description">Description</option>
+            <option value="Status">Status</option>
+        </select>
+        <input type="text" placeholder="New Title" name="newTitle">
+        <input type="text" placeholder="New Description" name="newDescription">
+        <input type="text" placeholder="New Status" name="newStatus">
+        <button type="submit">Modify!</button>
+    </form>
+
+    <h2>DELETE [title]</h2>
     <form method="POST" action="/todos?_method=delete">
         <input type="text" placeholder="Title" name="title">
         <button type="submit">Delete!</button>
     </form>
 
-    <h1>PATCH [check and edit based on title]</h1>
-    <form method="POST" action="/todos?_method=patch">
-        <input type="text" placeholder="Title" name="title">
-        <input type="text" placeholder="Description" name="description">
-        <input type="text" placeholder="Status" name="status">
-        <button type="submit">Modify!</button>
-    </form>
+    <script>
+        fetch("/todos")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach((element) => {
+                    document.querySelector("#data").innerHTML += `\
+                    <p>\
+                    <strong>Title:</strong> ${element.title}<br>\
+                    <strong>Description:</strong> ${element.description}<br>\
+                    <strong>Status:</strong> ${element.status}\
+                    </p>\
+                    `;
+                })
+            });
+    </script>
 </body>
 
 </html>
