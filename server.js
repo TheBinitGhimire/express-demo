@@ -1,7 +1,7 @@
 const express = require("express");
-const fs = require("fs");
-let methodOverride = require('method-override')
+const methodOverride = require('method-override')
 const path = require("path");
+const fileOperations = require("./fileOperations");
 
 const app = express();
 const router = express.Router();
@@ -9,13 +9,13 @@ const router = express.Router();
 const port = process.env.PORT || 1337;
 
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method'));
 
 router.get("/todos", (req, res) => {
-    let data = JSON.parse(fs.readFileSync("data.json"));
-    if (req.query.title) {
+    let data = fileOperations.readJSONFile();
+    if (title = req.query.title) {
         data.forEach((element) => {
-            if (element.title == req.query.title) {
+            if (element.title == title) {
                 res.status(200).send(element);
                 res.end();
             }
@@ -24,7 +24,7 @@ router.get("/todos", (req, res) => {
 });
 
 router.post("/todos", (req, res) => {
-    let data = JSON.parse(fs.readFileSync("data.json"));
+    let data = fileOperations.readJSONFile();
     const title = req.body.title;
     const description = req.body.description;
     const status = req.body.status;
@@ -42,17 +42,14 @@ router.post("/todos", (req, res) => {
             description: description,
             status: status
         });
-        let newData = JSON.stringify(data);
-        fs.writeFile("data.json", newData, (e) => {
-            if (e) throw e;
-        });
+        fileOperations.writeToFile(data);
     }
 
     res.redirect("/");
 });
 
 router.put("/todos", (req, res) => {
-    let data = JSON.parse(fs.readFileSync("data.json"));
+    let data = fileOperations.readJSONFile();
     const title = req.body.existingTitle;
     const newTitle = req.body.newTitle;
     const description = req.body.newDescription;
@@ -65,31 +62,13 @@ router.put("/todos", (req, res) => {
             element.status = status;
         }
     });
-    let newData = JSON.stringify(data);
-    fs.writeFile("data.json", newData, (e) => {
-        if (e) throw e;
-    });
+    fileOperations.writeToFile(data);
 
     res.redirect("/");
 });
 
-router.delete("/todos", (req, res) => {
-    let data = JSON.parse(fs.readFileSync("data.json"));
-    data.forEach((element) => {
-        if (element.title == req.body.title) {
-            data.splice(data.indexOf(element), 1);
-        }
-    });
-    let newData = JSON.stringify(data);
-    fs.writeFile("data.json", newData, (e) => {
-        if (e) throw e;
-    });
-
-    res.redirect("/");
-})
-
 router.patch("/todos", (req, res) => {
-    let data = JSON.parse(fs.readFileSync("data.json"));
+    let data = fileOperations.readJSONFile();
     const title = req.body.existingTitle;
     const selected = req.body.modify;
     const newValue = eval(`req.body.new${selected}`);
@@ -99,10 +78,19 @@ router.patch("/todos", (req, res) => {
             element[selected.toLowerCase()] = newValue;
         }
     });
-    let newData = JSON.stringify(data);
-    fs.writeFile("data.json", newData, (e) => {
-        if (e) throw e;
+    fileOperations.writeToFile(data);
+
+    res.redirect("/");
+});
+
+router.delete("/todos", (req, res) => {
+    let data = fileOperations.readJSONFile();
+    data.forEach((element) => {
+        if (element.title == req.body.title) {
+            data.splice(data.indexOf(element), 1);
+        }
     });
+    fileOperations.writeToFile(data);
 
     res.redirect("/");
 });
